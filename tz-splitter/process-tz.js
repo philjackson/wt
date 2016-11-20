@@ -16,6 +16,7 @@ function validateLens(zone) {
 
 function beginSplit(all) {
   let parsed = JSON.parse(all)
+  let recently = (new Date()).getTime() - 86400000 // now - 24 hours
 
   mkdirMaybe(parsed.version)
 
@@ -23,11 +24,25 @@ function beginSplit(all) {
     let [continent, city] = zone.name.split("/")
     validateLens(zone)
 
-    let path = parsed.version + "/" + continent 
+    let path = parsed.version + "/" + continent
     mkdirMaybe(path)
 
-    for (until of zone.untils) {
-      
+    let earliest = null
+
+    for (i in zone.untils) {
+      earliest = i
+
+      if (zone.untils[i] > recently) {
+        break
+      }
+    }
+
+    // here we're removing the offsets etc that are in the past -
+    // we don't need to know them as we only care about the future...
+    if (earliest != null) {
+      zone.untils  = zone.untils.slice(earliest, zone.untils.length)
+      zone.offsets = zone.offsets.slice(earliest, zone.offsets.length)
+      zone.abbrs   = zone.abbrs.slice(earliest, zone.abbrs.length)
     }
 
     fs.writeFileSync(path + "/" + city, JSON.stringify(zone))
