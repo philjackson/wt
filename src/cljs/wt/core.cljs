@@ -16,9 +16,21 @@
 ;; -------------------------
 ;; Views
 
+(defn hour-strip [from]
+  [:div
+   (doall
+    (for [i (range from (+ from 24))]
+      (let [hr (cond
+                 (> i 24) (- i 24)
+                 (= i 24) 0
+                 :else i)]
+        ^{:key hr} [:div hr])))])
+
 (defn home-page []
   (log (local-time))
-  [:div (get (local-date-time-format) "timeZone")])
+  [:div
+   (get (local-date-time-format) "timeZone")
+   [hour-strip 11]])
 
 (defn about-page []
   [:div [:h2 "About wt"]
@@ -44,11 +56,11 @@
 
 (defn init! []
   (accountant/configure-navigation!
-    {:nav-handler
-     (fn [path]
-       (secretary/dispatch! path))
-     :path-exists?
-     (fn [path]
-       (secretary/locate-route path))})
+   {:nav-handler
+    (fn [path]
+      (secretary/dispatch! path))
+    :path-exists?
+    (fn [path]
+      (secretary/locate-route path))})
   (accountant/dispatch-current!)
   (mount-root))
