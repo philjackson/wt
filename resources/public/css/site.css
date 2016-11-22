@@ -1,34 +1,29 @@
-.body-container {
-  font-family: 'Helvetica Neue', Verdana, Helvetica, Arial, sans-serif;
-  max-width: 600px;
-  margin: 0 auto;
-  padding-top: 72px;
-  -webkit-font-smoothing: antialiased;
-  font-size: 1.125em;
-  color: #333;
-  line-height: 1.5em;
+.hour-rows {
+  display:flex;
+  flex-direction: column;
 }
 
-h1, h2, h3 {
-  color: #000;
-}
-h1 {
-  font-size: 2.5em
-}
-
-h2 {
-  font-size: 2em
+.hour-columns {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
-h3 {
-  font-size: 1.5em
+.hour {
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 10px;
 }
 
-a {
-  text-decoration: none;
-  color: #09f;
+.hour.end {
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  margin-right: 2px;
 }
 
-a:hover {
-  text-decoration: underline;
+.hour.start {
+  border-top-left-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
+  margin-left: 2px;
 }

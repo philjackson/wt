@@ -17,20 +17,19 @@
 ;; Views
 
 (defn hour-strip [from]
-  [:div
+  [:div.hour-columns
    (doall
     (for [i (range from (+ from 24))]
-      (let [hr (cond
-                 (> i 24) (- i 24)
-                 (= i 24) 0
-                 :else i)]
-        ^{:key hr} [:div hr])))])
+      ^{:key hr} (cond
+                   (> i 24) [:span.hour.middle (- i 24)]
+                   (= i 24) [:span.hour.start 0]
+                   (= i 23) [:span.hour.end 23]
+                   :else [:span.hour.middle i])))])
 
 (defn home-page []
-  (log (local-time))
-  [:div
-   (get (local-date-time-format) "timeZone")
-   [hour-strip 11]])
+  [:div.hour-rows
+   [hour-strip 11]
+   [hour-strip 8]])
 
 (defn about-page []
   [:div [:h2 "About wt"]
