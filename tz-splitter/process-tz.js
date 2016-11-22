@@ -37,21 +37,28 @@ function beginSplit(all) {
       }
     }
 
+    let new_zone = {}
+
     // here we're removing the offsets etc that are in the past -
     // we don't need to know them as we only care about the future...
     if (earliest != null) {
-      zone.untils  = zone.untils.slice(earliest, zone.untils.length)
-      zone.offsets = zone.offsets.slice(earliest, zone.offsets.length)
-      zone.abbrs   = zone.abbrs.slice(earliest, zone.abbrs.length)
+      for (let j = earliest; j < zone.untils.length; j++) {
+        new_zone[zone.untils[j]] = [zone.abbrs[j], zone.offsets[j]]
+      }
     }
 
-    fs.writeFileSync(path + "/" + city, JSON.stringify(zone))
+    fs.writeFileSync(path + "/" + city, JSON.stringify(new_zone))
   }
 }
 
-var request = https.get("https://raw.githubusercontent.com/moment/moment-timezone/develop/data/unpacked/latest.json", (res) => {
-  let all = "";
+if (process.argv[2]) {
+  beginSplit(fs.readFileSync(process.argv[2]))
+}
+else {
+  var request = https.get("https://raw.githubusercontent.com/moment/moment-timezone/develop/data/unpacked/latest.json", (res) => {
+    let all = "";
 
-  res.on('data', (d) => { all += d })
-  res.on('end', () => { beginSplit(all) })
-})
+    res.on('data', (d) => { all += d })
+    res.on('end', () => { beginSplit(all) })
+  })
+}
