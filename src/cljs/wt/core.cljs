@@ -28,7 +28,6 @@
           ^{:key i} [:div.hour
                      (cond
                        (= hour 0) [:div.new-day
-                                   [:div hour]
                                    [:div.day (format/unparse
                                               (format/formatter "dd MMM")
                                               next)]]
