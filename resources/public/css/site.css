@@ -9,7 +9,22 @@
   justify-content: space-around;
 }
 
+.hour-row {
+  margin-top: 5px;
+}
+
+.name {
+  flex-grow: 2;
+  padding: 10px;
+  width: 10em;
+}
+
+.new-day .day {
+  font-size: xx-small;
+}
+
 .hour {
+  width: 2em;
   flex-grow: 1;
   border: 1px solid #ddd;
   text-align: center;
@@ -17,13 +32,9 @@
 }
 
 .hour.end {
-  border-top-right-radius: 0.5em;
-  border-bottom-right-radius: 0.5em;
-  margin-right: 2px;
+  border-right: 1px solid red;
 }
 
 .hour.start {
-  border-top-left-radius: 0.5em;
-  border-bottom-left-radius: 0.5em;
-  margin-left: 2px;
+  border-left: 1px solid red;
 }

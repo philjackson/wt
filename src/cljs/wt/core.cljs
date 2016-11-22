@@ -3,6 +3,7 @@
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [cljs-time.core :as time]
+            [cljs-time.format :as format]
             [cljs-time.core :as local]
             [accountant.core :as accountant]
             [wt.log :refer [log]]))
@@ -16,20 +17,28 @@
 ;; -------------------------
 ;; Views
 
-(defn hour-strip [from]
+(defn hour-strip [now name offset]
   [:div.hour-columns
-   (doall
-    (for [i (range from (+ from 24))]
-      ^{:key hr} (cond
-                   (> i 24) [:span.hour.middle (- i 24)]
-                   (= i 24) [:span.hour.start 0]
-                   (= i 23) [:span.hour.end 23]
-                   :else [:span.hour.middle i])))])
+   [:div.name name]
+   (let [start (time/plus now (time/hours offset))]
+     (doall
+      (for [i (range 0 24)]
+        (let [next (time/plus start (time/hours i))
+              hour (time/hour next)]
+          ^{:key i} [:div.hour
+                     (cond
+                       (= hour 0) [:div.new-day
+                                   [:div hour]
+                                   [:div.day (format/unparse
+                                              (format/formatter "dd MMM")
+                                              next)]]
+                       :else hour)]))))])
 
 (defn home-page []
-  [:div.hour-rows
-   [hour-strip 11]
-   [hour-strip 8]])
+  (let [now (time/now)]
+    [:div.hour-rows
+     [:div.hour-row [hour-strip now (get (local-date-time-format) "timeZone") +0]]
+     [:div.hour-row [hour-strip now "some/zone" -1]]]))
 
 (defn about-page []
   [:div [:h2 "About wt"]
