@@ -48,17 +48,22 @@ table.strips {
   color: #555;
 }
 
-.strips td.day {
+.strips td.hour {
+  width: 3%;
+}
+
+.strips td.work-hour {
+  background: #d2f7df;
   width: 3%;
 }
 
 td.new-day {
-  border: 1px solid #ccc;
-  width: 3%;
+  border-left: 2px solid #aaa;
   background: #ddd;
+  width: 3%;
 }
 
 td.first-day {
-  background: #eee;
+  background: #f7d2d2;
   width: 6%;
 }

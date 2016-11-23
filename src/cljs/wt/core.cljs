@@ -79,25 +79,31 @@
                 (with-meta
                   (cond
                     ;; represents the first hour (current hour in local time)
-                    (= i 0) [:td.first-day
-                             [:div.time (format/unparse
-                                         (format/formatter "HH:mm")
-                                         next)]
-                             [:div.date (format/unparse
-                                         (format/formatter "dd MMM")
-                                         next)]]
+                    (= i 0)
+                    [:td.first-day
+                     [:div.time (format/unparse
+                                 (format/formatter "HH:mm")
+                                 next)]
+                     [:div.date (format/unparse
+                                 (format/formatter "dd MMM")
+                                 next)]]
 
                     ;; represents a new day
-                    (= hour 0) [:td.new-day
-                                [:div.day (format/unparse
-                                           (format/formatter "dd")
-                                           next)]
-                                [:div.month (format/unparse
-                                             (format/formatter "MMM")
-                                             next)]]
+                    (= hour 0)
+                    [:td.new-day
+                     [:div.day (format/unparse
+                                (format/formatter "dd")
+                                next)]
+                     [:div.month (format/unparse
+                                  (format/formatter "MMM")
+                                  next)]]
+
+                    (and (> hour 8) (< hour 19))
+                    [:td.work-hour (format-time next @(:format options))]
 
                     ;; all other hours
-                    :else [:td.day (format-time next @(:format options))])
+                    :else
+                    [:td.hour (format-time next @(:format options))])
                   {:key i}))))))])))
 
 (defn search-box []
