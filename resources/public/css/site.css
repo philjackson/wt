@@ -18,6 +18,11 @@ table.strips {
   color: #aaa;
 }
 
+.strips td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 td.new-day {
   background: #ddd;
 }

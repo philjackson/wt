@@ -10,6 +10,7 @@
             [wt.log :refer [log]]))
 
 (def loaded-locales (atom {}))
+(def current-time (atom (time/now)))
 
 (defn parse-tz-id [id]
   (zipmap [:continent :city]
@@ -42,13 +43,12 @@
                                   time)]]
     (= fmt :24) [:div.time
                  [:span.hours (format/unparse
-                               (format/formatter "hh")
-                               time)]
-                 [:span.minutes "00"]]))
+                               (format/formatter "HH")
+                               time)]]))
 
 ;; -------------------------
 ;; Views
-(defn hour-strip [now name]
+(defn hour-strip [name]
   ;; before mount
   (async-fetch-locale name)
 
@@ -61,7 +61,7 @@
         [:div.city city]]
        (when-let [inf (get @loaded-locales name)]
          (let [[_, zonename, offset] inf
-               start (time/minus now (time/minutes offset))]
+               start (time/minus @current-time (time/minutes offset))]
            (doall
             (for [i (range 0 24)]
               (let [next (time/plus start (time/hours i))
@@ -70,17 +70,18 @@
                   (cond
                     ;; represents a new day
                     (= hour 0) [:td.new-day
-                                [:div
-                                 [:div.day (format/unparse
-                                            (format/formatter "dd")
-                                            next)]
-                                 [:div.month (format/unparse
-                                              (format/formatter "MMM")
-                                              next)]]]
+                                [:div.day (format/unparse
+                                           (format/formatter "dd")
+                                           next)]
+                                [:div.month (format/unparse
+                                             (format/formatter "MMM")
+                                             next)]]
 
                     ;; represents the first hour (current hour in local time)
                     (= i 0) [:td.first-day
-                             (format-time next :24)]
+                             (format/unparse
+                              (format/formatter "hh:mm")
+                              next)]
 
                     ;; all other hours
                     :else [:td (format-time next :24)])
@@ -90,10 +91,11 @@
   (let [now (time/now)]
     [:table.strips
      [:tbody
-      [hour-strip now (get (local-date-time-format) "timeZone")]
-      [hour-strip now "Europe/Paris"]
-      [hour-strip now "Africa/Abidjan"]
-      [hour-strip now "Asia/Hong_Kong"]]]))
+      [hour-strip (get (local-date-time-format) "timeZone")]
+      [hour-strip "Europe/Paris"]
+      [hour-strip "Africa/Abidjan"]
+      [hour-strip "US/Eastern"]
+      [hour-strip "Asia/Hong_Kong"]]]))
 
 (defn about-page []
   [:div [:h2 "About wt"]
@@ -126,4 +128,5 @@
     (fn [path]
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
+  (.setInterval js/window #(reset! current-time (time/now)) 30000)
   (mount-root))
