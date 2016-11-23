@@ -20,9 +20,17 @@ function beginSplit(all) {
 
   mkdirMaybe(parsed.version)
 
+  let indexes = []
+
   for (zone of parsed.zones) {
     let [continent, city] = zone.name.split("/")
     validateLens(zone)
+
+    indexes.push({
+      id: zone.name,
+      continent: continent,
+      city: city
+    })
 
     let path = parsed.version + "/" + continent
     mkdirMaybe(path)
@@ -47,7 +55,8 @@ function beginSplit(all) {
       }
     }
 
-    fs.writeFileSync(path + "/" + city, JSON.stringify(new_zone))
+    fs.writeFileSync(path + "/" + city, JSON.stringify(new_zone) + ".json")
+    fs.writeFileSync(parsed.version + "/index.json", JSON.stringify(indexes))
   }
 }
 
