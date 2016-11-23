@@ -1,5 +1,6 @@
 (ns wt.core
-  (:require [reagent.core :as reagent :refer [atom]]
+  (:require [ajax.core :refer [GET]]
+            [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
             [secretary.core :as secretary :include-macros true]
             [cljs-time.core :as time]
@@ -8,36 +9,56 @@
             [accountant.core :as accountant]
             [wt.log :refer [log]]))
 
+(def loaded-locales (atom {}))
+
 (defn local-date-time-format []
   (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))))
 
 (defn local-time []
   (time/local-date-time (time/now)))
 
+(defn extract-current-tz [timestamps]
+  (first (filter #(or (< (time/epoch) (first %))
+                      (nil? (first %))) timestamps)))
+
+(defn async-fetch-locale [name]
+  (let [[continent city] (clojure.string/split name "/")
+        response (GET (str "/tz/" continent "/" city)
+                     {:response-format :json
+                      :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
+
 ;; -------------------------
 ;; Views
+(defn hour-strip [now name]
+  ;; before mount
+  (async-fetch-locale name)
 
-(defn hour-strip [now name offset]
-  [:div.hour-columns
-   [:div.name name]
-   (let [start (time/plus now (time/hours offset))]
-     (doall
-      (for [i (range 0 24)]
-        (let [next (time/plus start (time/hours i))
-              hour (time/hour next)]
-          ^{:key i} [:div.hour
-                     (cond
-                       (= hour 0) [:div.new-day
-                                   [:div.day (format/unparse
-                                              (format/formatter "dd MMM")
-                                              next)]]
-                       :else hour)]))))])
+  ;; render
+  (fn []
+    [:div.hour-columns
+     [:div.name name]
+     (when-let [inf (get @loaded-locales name)]
+       (let [[_, zonename, offset] inf
+             start (time/minus now (time/minutes offset))]
+         (doall
+          (for [i (range 0 24)]
+            (let [next (time/plus start (time/hours i))
+                  hour (time/hour next)]
+              ^{:key i} [:div.hour
+                         (cond
+                           (= hour 0) [:div.new-day
+                                       [:div.day (format/unparse
+                                                  (format/formatter "dd MMM")
+                                                  next)]]
+                           :else hour)])))))]))
 
 (defn home-page []
   (let [now (time/now)]
     [:div.hour-rows
-     [:div.hour-row [hour-strip now (get (local-date-time-format) "timeZone") +0]]
-     [:div.hour-row [hour-strip now "some/zone" -1]]]))
+     [:div.hour-row [hour-strip now (get (local-date-time-format) "timeZone")]]
+     [:div.hour-row [hour-strip now "Europe/Paris"]]
+     [:div.hour-row [hour-strip now "Africa/Abidjan"]]
+     [:div.hour-row [hour-strip now "Asia/Hong_Kong"]]]))
 
 (defn about-page []
   [:div [:h2 "About wt"]
