@@ -11,10 +11,12 @@
             [accountant.core :as accountant]
             [wt.log :refer [log]]))
 
+(defonce options {:format (atom :12)})
+
 (def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
-(def timezones-to-show (atom []))
 
+(defonce timezones-to-show (atom []))
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
                                  (.field this "city")
@@ -43,15 +45,15 @@
 (defn format-time [time fmt]
   (cond
     (= fmt :12) [:div.time
-                 [:span.hours (format/unparse
-                               (format/formatter "h")
-                               time)]
-                 [:span.meridiem (format/unparse
-                                  (format/formatter "a")
-                                  time)]]
+                 [:div.hours (format/unparse
+                              (format/formatter "h")
+                              time)]
+                 [:div.meridiem (format/unparse
+                                 (format/formatter "a")
+                                 time)]]
     (= fmt :24) [:div.time
                  [:span.hours (format/unparse
-                               (format/formatter "HH")
+                               (format/formatter "H")
                                time)]]))
 
 ;; -------------------------
@@ -65,8 +67,8 @@
     (let [{:keys [continent city]} (parse-tz-id name)]
       [:tr
        [:td.name
-        [:div.continent continent]
-        [:div.city city]]
+        [:div.city city]
+        [:div.continent continent]]
        (when-let [inf (get @loaded-locales name)]
          (let [[_, zonename, offset] inf
                start (time/minus @current-time (time/minutes offset))]
@@ -76,6 +78,15 @@
                     hour (time/hour next)]
                 (with-meta
                   (cond
+                    ;; represents the first hour (current hour in local time)
+                    (= i 0) [:td.first-day
+                             [:div.time (format/unparse
+                                         (format/formatter "HH:mm")
+                                         next)]
+                             [:div.date (format/unparse
+                                         (format/formatter "dd MMM")
+                                         next)]]
+
                     ;; represents a new day
                     (= hour 0) [:td.new-day
                                 [:div.day (format/unparse
@@ -85,14 +96,8 @@
                                              (format/formatter "MMM")
                                              next)]]
 
-                    ;; represents the first hour (current hour in local time)
-                    (= i 0) [:td.first-day
-                             [:div.time (format/unparse
-                                         (format/formatter "HH:mm")
-                                         next)]]
-
                     ;; all other hours
-                    :else [:td (format-time next :24)])
+                    :else [:td.day (format-time next @(:format options))])
                   {:key i}))))))])))
 
 (defn search-box []
@@ -118,10 +123,6 @@
         (for [z @timezones-to-show]
           ^{:key z} [hour-strip z]))]]]))
 
-(defn about-page []
-  [:div [:h2 "About wt"]
-   [:div [:a {:href "/"} "go to the home page"]]])
-
 (defn current-page []
   [:div [(session/get :current-page)]])
 
@@ -131,11 +132,8 @@
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
 
-(secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
-
 ;; -------------------------
-;; Initialize app
+;; Initialise app
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))

@@ -1,26 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+
+body {
+  font-family: 'Work Sans', sans-serif;
+}
+
 table.strips {
-  table-layout: fixed;
-  
+  border-spacing: 0px 10px;
+  width: fixed;
 }
 
 .strips .name {
-  padding-right: 20px;
+  padding-right: 5px;
+  width: 6%;
+}
+
+.strips .name .continent {
+  font-size: x-small;
+}
+
+.strips td.name {
+  background: #ccc;
 }
 
 .strips td {
-  width: 4%;
   background: #eee;
   text-align: center;
+
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .time .minutes,.meridiem,.month {
-  font-size: small;
-  color: #aaa;
+  font-size: x-small;
+  color: #999;
 }
 
-.strips td {
-  padding-top: 10px;
-  padding-bottom: 10px;
+.first-day .date {
+  font-size: x-small;
+  color: #555;
+}
+
+.strips td.day {
+  width: 3%;
 }
 
 td.new-day {
@@ -29,4 +50,5 @@ td.new-day {
 
 td.first-day {
   background: pink;
+  width: 6%;
 }
