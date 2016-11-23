@@ -13,6 +13,7 @@
                  [com.andrewmcveigh/cljs-time "0.4.0"]
                  [ring/ring-defaults "0.2.1"]
                  [compojure "1.5.1"]
+                 [cljsjs/lunrjs "0.6.0-1"]
                  [cljs-ajax "0.5.8"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]

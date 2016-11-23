@@ -2,6 +2,7 @@
   (:require [ajax.core :refer [GET]]
             [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
+            [cljsjs.lunrjs :as lunr]
             [secretary.core :as secretary :include-macros true]
             [cljs-time.core :as time]
             [cljs-time.format :as format]
@@ -11,6 +12,11 @@
 
 (def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
+
+(def idx (.lunr js/window #(this-as this
+                             (.ref this "id")
+                             (.field this "city")
+                             (.field this "continent"))))
 
 (defn parse-tz-id [id]
   (zipmap [:continent :city]
@@ -28,7 +34,7 @@
 
 (defn async-fetch-locale [name]
   (let [{:keys [continent city]} (parse-tz-id name)
-        response (GET (str "/tz/" continent "/" city)
+        response (GET (str "/tz/" continent "/" city ".json")
                      {:response-format :json
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
 
@@ -119,6 +125,11 @@
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
 
+(defn load-index [docs]
+  (doall
+   (doseq [doc docs]
+     (.add idx (clj->js doc)))))
+
 (defn init! []
   (accountant/configure-navigation!
    {:nav-handler
@@ -128,5 +139,8 @@
     (fn [path]
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
+  (GET "/tz/index.json"
+      {:response-format :json
+       :handler load-index})
   (.setInterval js/window #(reset! current-time (time/now)) 30000)
   (mount-root))
