@@ -10,17 +10,21 @@
 }
 
 .hour-row {
-  margin-top: 5px;
 }
 
 .name {
   flex-grow: 2;
   padding: 10px;
-  width: 10em;
+  width: 15em;
 
+  flex-direction: column;
   display: flex;
-  align-items: center;
   justify-content: center;
+  text-align: right;
+}
+
+.continent {
+  font-size: small;
 }
 
 .new-day .day {
@@ -34,14 +38,5 @@
   justify-content: center;
 
   width: 2em;
-  border: 1px solid #ddd;
   padding: 10px;
-}
-
-.hour.end {
-  border-right: 1px solid red;
-}
-
-.hour.start {
-  border-left: 1px solid red;
 }

@@ -11,6 +11,10 @@
 
 (def loaded-locales (atom {}))
 
+(defn parse-tz-id [id]
+  (zipmap [:continent :city]
+          (clojure.string/split id "/")))
+
 (defn local-date-time-format []
   (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))))
 
@@ -22,7 +26,7 @@
                       (nil? (first %))) timestamps)))
 
 (defn async-fetch-locale [name]
-  (let [[continent city] (clojure.string/split name "/")
+  (let [{:keys [continent city]} (parse-tz-id name)
         response (GET (str "/tz/" continent "/" city)
                      {:response-format :json
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
@@ -35,22 +39,25 @@
 
   ;; render
   (fn []
-    [:div.hour-columns
-     [:div.name name]
-     (when-let [inf (get @loaded-locales name)]
-       (let [[_, zonename, offset] inf
-             start (time/minus now (time/minutes offset))]
-         (doall
-          (for [i (range 0 24)]
-            (let [next (time/plus start (time/hours i))
-                  hour (time/hour next)]
-              ^{:key i} [:div.hour
-                         (cond
-                           (= hour 0) [:div.new-day
-                                       [:div.day (format/unparse
-                                                  (format/formatter "dd MMM")
-                                                  next)]]
-                           :else hour)])))))]))
+    (let [{:keys [continent city]} (parse-tz-id name)]
+      [:div.hour-columns
+       [:div.name
+        [:div.continent continent]
+        [:div.city city]]
+       (when-let [inf (get @loaded-locales name)]
+         (let [[_, zonename, offset] inf
+               start (time/minus now (time/minutes offset))]
+           (doall
+            (for [i (range 0 24)]
+              (let [next (time/plus start (time/hours i))
+                    hour (time/hour next)]
+                ^{:key i} [:div.hour
+                           (cond
+                             (= hour 0) [:div.new-day
+                                         [:div.day (format/unparse
+                                                    (format/formatter "dd MMM")
+                                                    next)]]
+                             :else hour)])))))])))
 
 (defn home-page []
   (let [now (time/now)]
