@@ -67,7 +67,7 @@
     (let [{:keys [continent city]} (parse-tz-id name)]
       [:tr
        [:td.name
-        [:div.city city]
+        [:div.city (clojure.string/replace city "_" " ")]
         [:div.continent continent]]
        (when-let [inf (get @loaded-locales name)]
          (let [[_, zonename, offset] inf
@@ -115,6 +115,7 @@
                                             (cb nil (clj->js {:options options
                                                               :complete (= (count options) 1)
                                                               :autoload false}))))
+                           :placeholder "Name of a location..."
                            :onChange (fn [s]
                                        (swap! timezones-to-show conj (get (js->clj s) "value")))}])
 
