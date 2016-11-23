@@ -37,13 +37,13 @@ function beginSplit(all) {
       }
     }
 
-    let new_zone = {}
+    let new_zone = []
 
     // here we're removing the offsets etc that are in the past -
     // we don't need to know them as we only care about the future...
     if (earliest != null) {
       for (let j = earliest; j < zone.untils.length; j++) {
-        new_zone[zone.untils[j]] = [zone.abbrs[j], zone.offsets[j]]
+        new_zone.push([zone.untils[j], zone.abbrs[j], zone.offsets[j]])
       }
     }
 
