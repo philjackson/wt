@@ -12,3 +12,16 @@ table.strips {
   background: #eee;
   text-align: center;
 }
+
+.time .minutes,.meridiem,.month {
+  font-size: small;
+  color: #aaa;
+}
+
+td.new-day {
+  background: #ddd;
+}
+
+td.first-day {
+  background: pink;
+}

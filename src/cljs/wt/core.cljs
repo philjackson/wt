@@ -31,6 +31,21 @@
                      {:response-format :json
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
 
+(defn format-time [time fmt]
+  (cond
+    (= fmt :12) [:div.time
+                 [:span.hours (format/unparse
+                               (format/formatter "h")
+                               time)]
+                 [:span.meridiem (format/unparse
+                                  (format/formatter "a")
+                                  time)]]
+    (= fmt :24) [:div.time
+                 [:span.hours (format/unparse
+                               (format/formatter "hh")
+                               time)]
+                 [:span.minutes "00"]]))
+
 ;; -------------------------
 ;; Views
 (defn hour-strip [now name]
@@ -52,10 +67,22 @@
               (let [next (time/plus start (time/hours i))
                     hour (time/hour next)]
                 (with-meta (cond
-                             (= hour 0) [:td [:div (format/unparse
-                                                    (format/formatter "dd MMM")
-                                                    next)]]
-                             :else [:td hour])
+                             ;; represents a new day
+                             (= hour 0) [:td.new-day
+                                         [:div
+                                          [:div.day (format/unparse
+                                                     (format/formatter "dd")
+                                                     next)]
+                                          [:div.month (format/unparse
+                                                       (format/formatter "MMM")
+                                                       next)]]]
+
+                             ;; represents the first hour (current hour in local time)
+                             (= i 0) [:td.first-day
+                                      (format-time next :24)]
+
+                             ;; all other hours
+                             :else [:td (format-time next :24)])
                   {:key i}))))))])))
 
 (defn home-page []
