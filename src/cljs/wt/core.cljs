@@ -40,8 +40,8 @@
   ;; render
   (fn []
     (let [{:keys [continent city]} (parse-tz-id name)]
-      [:div.hour-columns
-       [:div.name
+      [:tr
+       [:td.name
         [:div.continent continent]
         [:div.city city]]
        (when-let [inf (get @loaded-locales name)]
@@ -51,21 +51,21 @@
             (for [i (range 0 24)]
               (let [next (time/plus start (time/hours i))
                     hour (time/hour next)]
-                ^{:key i} [:div.hour
-                           (cond
-                             (= hour 0) [:div.new-day
-                                         [:div.day (format/unparse
+                (with-meta (cond
+                             (= hour 0) [:td [:div (format/unparse
                                                     (format/formatter "dd MMM")
                                                     next)]]
-                             :else hour)])))))])))
+                             :else [:td hour])
+                  {:key i}))))))])))
 
 (defn home-page []
   (let [now (time/now)]
-    [:div.hour-rows
-     [:div.hour-row [hour-strip now (get (local-date-time-format) "timeZone")]]
-     [:div.hour-row [hour-strip now "Europe/Paris"]]
-     [:div.hour-row [hour-strip now "Africa/Abidjan"]]
-     [:div.hour-row [hour-strip now "Asia/Hong_Kong"]]]))
+    [:table.strips
+     [:tbody
+      [hour-strip now (get (local-date-time-format) "timeZone")]
+      [hour-strip now "Europe/Paris"]
+      [hour-strip now "Africa/Abidjan"]
+      [hour-strip now "Asia/Hong_Kong"]]]))
 
 (defn about-page []
   [:div [:h2 "About wt"]

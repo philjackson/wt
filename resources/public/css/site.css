@@ -1,42 +1,14 @@
-.hour-rows {
-  display:flex;
-  flex-direction: column;
+table.strips {
+  table-layout: fixed;
+  
 }
 
-.hour-columns {
-  display:flex;
-  flex-direction: row;
-  justify-content: space-around;
+.strips .name {
+  padding-right: 20px;
 }
 
-.hour-row {
-}
-
-.name {
-  flex-grow: 2;
-  padding: 10px;
-  width: 15em;
-
-  flex-direction: column;
-  display: flex;
-  justify-content: center;
-  text-align: right;
-}
-
-.continent {
-  font-size: small;
-}
-
-.new-day .day {
-  font-weight: bold;
+.strips td {
+  width: 4%;
+  background: #eee;
   text-align: center;
-}
-
-.hour {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 2em;
-  padding: 10px;
 }
