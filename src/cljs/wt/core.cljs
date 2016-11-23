@@ -66,23 +66,24 @@
             (for [i (range 0 24)]
               (let [next (time/plus start (time/hours i))
                     hour (time/hour next)]
-                (with-meta (cond
-                             ;; represents a new day
-                             (= hour 0) [:td.new-day
-                                         [:div
-                                          [:div.day (format/unparse
-                                                     (format/formatter "dd")
-                                                     next)]
-                                          [:div.month (format/unparse
-                                                       (format/formatter "MMM")
-                                                       next)]]]
+                (with-meta
+                  (cond
+                    ;; represents a new day
+                    (= hour 0) [:td.new-day
+                                [:div
+                                 [:div.day (format/unparse
+                                            (format/formatter "dd")
+                                            next)]
+                                 [:div.month (format/unparse
+                                              (format/formatter "MMM")
+                                              next)]]]
 
-                             ;; represents the first hour (current hour in local time)
-                             (= i 0) [:td.first-day
-                                      (format-time next :24)]
+                    ;; represents the first hour (current hour in local time)
+                    (= i 0) [:td.first-day
+                             (format-time next :24)]
 
-                             ;; all other hours
-                             :else [:td (format-time next :24)])
+                    ;; all other hours
+                    :else [:td (format-time next :24)])
                   {:key i}))))))])))
 
 (defn home-page []
