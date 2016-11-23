@@ -4,9 +4,15 @@ body {
   font-family: 'Work Sans', sans-serif;
 }
 
+#app {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
 table.strips {
   border-spacing: 0px 10px;
-  width: fixed;
+  width: 100%;
 }
 
 .strips .name {
@@ -19,7 +25,7 @@ table.strips {
 }
 
 .strips td.name {
-  background: #ccc;
+  background: #fff;
 }
 
 .strips td {
@@ -45,10 +51,11 @@ table.strips {
 }
 
 td.new-day {
+  width: 3%;
   background: #ddd;
 }
 
 td.first-day {
-  background: pink;
+  background: #eee;
   width: 6%;
 }
