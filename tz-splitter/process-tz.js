@@ -18,7 +18,7 @@ function beginSplit(all) {
   let parsed = JSON.parse(all)
   let recently = (new Date()).getTime() - 86400000 // now - 24 hours
 
-  mkdirMaybe(parsed.version)
+  mkdirMaybe("tz")
 
   let indexes = []
 
@@ -32,7 +32,7 @@ function beginSplit(all) {
       city: city
     })
 
-    let path = parsed.version + "/" + continent
+    let path = "tz/" + continent
     mkdirMaybe(path)
 
     let earliest = null
@@ -55,8 +55,8 @@ function beginSplit(all) {
       }
     }
 
-    fs.writeFileSync(path + "/" + city, JSON.stringify(new_zone) + ".json")
-    fs.writeFileSync(parsed.version + "/index.json", JSON.stringify(indexes))
+    fs.writeFileSync(path + "/" + city + ".json", JSON.stringify(new_zone))
+    fs.writeFileSync("tz/index.json", JSON.stringify(indexes))
   }
 }
 
