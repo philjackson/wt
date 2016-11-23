@@ -16,6 +16,7 @@
                  [cljsjs/lunrjs "0.6.0-1"]
                  [cljs-ajax "0.5.8"]
                  [hiccup "1.0.5"]
+                 [cljsjs/react-select "1.0.0-rc.1"]
                  [yogthos/config "0.8"]
                  [org.clojure/clojurescript "1.9.229"
                   :scope "provided"]

@@ -2,7 +2,8 @@
   (:require [ajax.core :refer [GET]]
             [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
-            [cljsjs.lunrjs :as lunr]
+            [cljsjs.lunrjs]
+            [cljsjs.react-select]
             [secretary.core :as secretary :include-macros true]
             [cljs-time.core :as time]
             [cljs-time.format :as format]
@@ -12,11 +13,12 @@
 
 (def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
+(def timezones-to-show (atom []))
 
-(def idx (.lunr js/window #(this-as this
-                             (.ref this "id")
-                             (.field this "city")
-                             (.field this "continent"))))
+(defonce idx (.lunr js/window #(this-as this
+                                 (.ref this "id")
+                                 (.field this "city")
+                                 (.field this "continent"))))
 
 (defn parse-tz-id [id]
   (zipmap [:continent :city]
@@ -85,23 +87,36 @@
 
                     ;; represents the first hour (current hour in local time)
                     (= i 0) [:td.first-day
-                             (format/unparse
-                              (format/formatter "hh:mm")
-                              next)]
+                             [:div.time (format/unparse
+                                         (format/formatter "HH:mm")
+                                         next)]]
 
                     ;; all other hours
                     :else [:td (format-time next :24)])
                   {:key i}))))))])))
 
+(defn search-box []
+  [:> (.-Async js/Select) {:loadOptions (fn [input cb]
+                                          (let [res (js->clj (.search idx input))
+                                                options (mapv (fn [l]
+                                                                {:value (get l "ref")
+                                                                 :label (get l "ref")}) res)]
+                                            (cb nil (clj->js {:options options
+                                                              :complete (= (count options) 1)
+                                                              :autoload false}))))
+                           :onChange (fn [s]
+                                       (swap! timezones-to-show conj (get (js->clj s) "value")))}])
+
 (defn home-page []
   (let [now (time/now)]
-    [:table.strips
-     [:tbody
-      [hour-strip (get (local-date-time-format) "timeZone")]
-      [hour-strip "Europe/Paris"]
-      [hour-strip "Africa/Abidjan"]
-      [hour-strip "US/Eastern"]
-      [hour-strip "Asia/Hong_Kong"]]]))
+    [:div
+     [search-box]
+     [:table.strips
+      [:tbody
+       [hour-strip (get (local-date-time-format) "timeZone")]
+       (doall
+        (for [z @timezones-to-show]
+          ^{:key z} [hour-strip z]))]]]))
 
 (defn about-page []
   [:div [:h2 "About wt"]
