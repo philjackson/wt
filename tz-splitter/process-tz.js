@@ -26,14 +26,14 @@ function beginSplit(all) {
     let [continent, city] = zone.name.split("/")
     validateLens(zone)
 
-    indexes.push({
-      id: zone.name,
-      continent: continent,
-      city: city
-    })
-
-    let path = "tz/" + continent
-    mkdirMaybe(path)
+    // don't bother indexing top level tzs (like Zulu)
+    if (city) {
+      indexes.push({
+        id: zone.name,
+        continent: continent,
+        city: city
+      })
+    }
 
     let earliest = null
 
@@ -55,7 +55,16 @@ function beginSplit(all) {
       }
     }
 
-    fs.writeFileSync(path + "/" + city + ".json", JSON.stringify(new_zone))
+    let path = "tz/"
+    if (city) {
+      path += continent
+    }
+
+    mkdirMaybe(path)
+
+    let fn = ( city || continent )
+
+    fs.writeFileSync(path + "/" + fn + ".json", JSON.stringify(new_zone))
     fs.writeFileSync("tz/index.json", JSON.stringify(indexes))
   }
 }
