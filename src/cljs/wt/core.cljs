@@ -13,10 +13,10 @@
 
 (defonce options {:format (atom :12)})
 
-(def loaded-locales (atom #{}))
+(def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
 
-(defonce timezones-to-show (atom []))
+(defonce timezones-to-show (atom #{(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")}))
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
                                  (.field this "city")
@@ -25,9 +25,6 @@
 (defn parse-tz-id [id]
   (zipmap [:continent :city]
           (clojure.string/split id "/")))
-
-(defn local-date-time-format []
-  (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))))
 
 (defn local-time []
   (time/local-date-time (time/now)))
@@ -125,7 +122,6 @@
      [search-box]
      [:table.strips
       [:tbody
-       [hour-strip (get (local-date-time-format) "timeZone")]
        (doall
         (for [z @timezones-to-show]
           ^{:key z} [hour-strip z]))]]]))
