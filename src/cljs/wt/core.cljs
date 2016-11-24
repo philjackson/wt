@@ -13,7 +13,7 @@
 
 (defonce options {:format (atom :12)})
 
-(def loaded-locales (atom {}))
+(def loaded-locales (atom #{}))
 (def current-time (atom (time/now)))
 
 (defonce timezones-to-show (atom []))
