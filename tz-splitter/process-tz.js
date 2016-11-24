@@ -62,6 +62,8 @@ function beginSplit(all) {
 
     mkdirMaybe(path)
 
+    // this is here because there might be a top-level
+    // tz (like Zulu)
     let fn = ( city || continent )
 
     fs.writeFileSync(path + "/" + fn + ".json", JSON.stringify(new_zone))
