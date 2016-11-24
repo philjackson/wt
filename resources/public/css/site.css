@@ -67,3 +67,8 @@ td.first-day {
   background: #f7d2d2;
   width: 6%;
 }
+
+.is-focused:not(.is-open) > .Select-control {
+  border: 0px;
+  box-shadow: none;
+}
