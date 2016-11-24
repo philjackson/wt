@@ -51,7 +51,7 @@
   :cljsbuild
   {:builds {:min
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
-             :compiler {:output-to "target/cljsbuild/public/js/app.js"
+             :compiler {:output-to "dist/js/app.js"
                         :output-dir "target/uberjar"
                         :optimizations :advanced
                         :pretty-print  false}}
