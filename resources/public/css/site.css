@@ -72,3 +72,13 @@ td.first-day {
   border: 0px;
   box-shadow: none;
 }
+
+td.delete {
+  width:1%;
+  background: white;
+  text-align: middle;
+}
+
+.delete div:hover {
+  background: pink;
+}
