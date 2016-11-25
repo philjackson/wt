@@ -63,10 +63,7 @@
   (fn []
     (let [{:keys [continent city]} (parse-tz-id name)]
       [:tr
-       [:td.delete
-        [:div {:on-click (fn []
-                           (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))}
-         "✖"]]
+       [:td.delete {:on-click (fn [] (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))} "✖"]
        [:td.name
         [:div.city (clojure.string/replace city "_" " ")]
         [:div.continent continent]]

@@ -79,6 +79,6 @@ td.delete {
   text-align: middle;
 }
 
-.delete div:hover {
+.delete:hover {
   background: pink;
 }
