@@ -16,7 +16,12 @@
 (def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
 
-(defonce timezones-to-show (atom #{(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")}))
+;; setup with some test zones. The first one is the user's home location.
+(defonce timezones-to-show (atom [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
+                                  "Europe/Paris"
+                                  "Europe/Rome"
+                                  "Asia/Tokyo"
+                                  "America/New_York"]))
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
                                  (.field this "city")
