@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+
+body {
+  font-family: 'Work Sans', sans-serif;
+}
+
+#app {
+  margin-left: auto;
+  margin-right: auto;
+  width: 90%;
+}
+
+table.strips {
+  border-spacing: 0px 10px;
+  width: 100%;
+}
+
+.strips .name {
+  padding-right: 5px;
+  width: 6%;
+  text-align: right;
+  border-right: 1px solid #ccc;
+}
+
+.strips .name .continent {
+  font-size: x-small;
+}
+
+.strips td.name {
+  background: #fff;
+}
+
+.strips td {
+  background: #eee;
+  text-align: center;
+
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.time .minutes,.meridiem,.month {
+  font-size: x-small;
+  color: #999;
+}
+
+.first-day .date {
+  font-size: x-small;
+  color: #555;
+}
+
+.strips td.hour {
+  width: 3%;
+}
+
+.strips td.work-hour {
+  background: #d2f7df;
+  width: 3%;
+}
+
+td.new-day {
+  border-left: 2px solid #aaa;
+  background: #ddd;
+  width: 3%;
+}
+
+td.first-day {
+  background: #f7d2d2;
+  width: 6%;
+}
+
+.is-focused:not(.is-open) > .Select-control {
+  border: 0px;
+  box-shadow: none;
+}
+
+td.delete {
+  width:1%;
+  background: white;
+  text-align: middle;
+}
+
+.delete:hover {
+  background: pink;
+}
