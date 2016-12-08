@@ -23,3 +23,4 @@ cp -r tmp/resources/public/css .
 cp -r tmp/resources/public/tz .
 
 git add css tz js
+git ci -m '$(date) push'
