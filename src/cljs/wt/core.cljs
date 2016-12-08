@@ -40,7 +40,7 @@
 
 (defn async-fetch-locale [name]
   (let [{:keys [continent city]} (parse-tz-id name)
-        response (GET (str "/tz/" continent "/" city ".json")
+        response (GET (str "/wt/tz/" continent "/" city ".json")
                      {:response-format :json
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
 
@@ -161,7 +161,7 @@
     (fn [path]
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
-  (GET "/tz/index.json"
+  (GET "/wt/tz/index.json"
       {:response-format :json
        :handler load-index})
   (.setInterval js/window #(reset! current-time (time/now)) 30000)
