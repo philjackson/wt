@@ -25,3 +25,5 @@ cp -r tmp/resources/public/tz .
 
 git add css tz js
 git commit -m "$(date)"
+
+git push
