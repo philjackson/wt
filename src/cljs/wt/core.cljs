@@ -9,6 +9,7 @@
             [cljs-time.format :as format]
             [cljs-time.core :as local]
             [accountant.core :as accountant]
+            [wt.store :refer [from-ls to-ls]]
             [wt.log :refer [log]]))
 
 (defonce options {:format (atom :12)})
@@ -17,11 +18,12 @@
 (def current-time (atom (time/now)))
 
 ;; setup with some test zones. The first one is the user's home location.
-(defonce timezones-to-show (atom [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
-                                  "Europe/Paris"
-                                  "Europe/Rome"
-                                  "Asia/Tokyo"
-                                  "America/New_York"]))
+(defonce timezones-to-show (atom (or (from-ls "saved-zones")
+                                     [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
+                                      "Europe/Paris"
+                                      "Europe/Rome"
+                                      "Asia/Tokyo"
+                                      "America/New_York"])))
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
                                  (.field this "city")
@@ -67,6 +69,9 @@
                                  (format/formatter "H")
                                  time)]])))
 
+(defn persist-timezones []
+  (to-ls "saved-zones" @timezones-to-show))
+
 ;; -------------------------
 ;; Views
 (defn hour-strip [name]
@@ -77,7 +82,10 @@
   (fn []
     (let [{:keys [continent city]} (parse-tz-id name)]
       [:tr
-       [:td.delete {:on-click (fn [] (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))} "✖"]
+       [:td.delete {:on-click (fn []
+                                (swap! timezones-to-show #(remove (fn [n] (= n name)) %))
+                                (persist-timezones))}
+        "✖"]
        [:td.name
         [:div.city (clojure.string/replace city "_" " ")]
         [:div.continent continent]]
@@ -129,7 +137,8 @@
                                                               :autoload false}))))
                            :placeholder "Name of a location..."
                            :onChange (fn [s]
-                                       (swap! timezones-to-show conj (get (js->clj s) "value")))}])
+                                       (swap! timezones-to-show conj (get (js->clj s) "value"))
+                                       (persist-timezones))}])
 
 (defn home-page []
   (let [now (time/now)]
