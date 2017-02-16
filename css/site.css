@@ -15,6 +15,12 @@ table.strips {
   width: 100%;
 }
 
+@media screen and (max-width: 480px) {
+  table.strips {
+    width: 400%;
+  }
+}
+
 .strips .name {
   padding-right: 5px;
   width: 6%;
@@ -41,6 +47,10 @@ table.strips {
 .time .minutes,.meridiem,.month {
   font-size: x-small;
   color: #999;
+}
+
+.extra-mins {
+  font-size: x-small;
 }
 
 .first-day .date {
