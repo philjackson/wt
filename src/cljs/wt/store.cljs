@@ -1,8 +1,8 @@
 (ns wt.store)
 
 (defn from-ls [key]
-  (some->> (.getItem js/localStorage key)
+  (some->> (.getItem (.-localStorage js/window) key)
            (cljs.reader/read-string)))
 
 (defn to-ls [key value]
-  (.setItem js/localStorage key (str value)))
+  (.setItem (.-localStorage js/window) key (str value)))
