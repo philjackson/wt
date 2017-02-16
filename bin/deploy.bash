@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -x
 set -e
 
 # delete old version
@@ -23,4 +24,4 @@ cp -r tmp/resources/public/css .
 cp -r tmp/resources/public/tz .
 
 git add css tz js
-git commit -m "$(date) push"
+git commit -m "$(date)"
