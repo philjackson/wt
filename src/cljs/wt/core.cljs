@@ -45,18 +45,27 @@
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
 
 (defn format-time [time fmt]
-  (cond
-    (= fmt :12) [:div.time
-                 [:div.hours (format/unparse
-                              (format/formatter "h")
-                              time)]
-                 [:div.meridiem (format/unparse
-                                 (format/formatter "a")
-                                 time)]]
-    (= fmt :24) [:div.time
-                 [:span.hours (format/unparse
-                               (format/formatter "H")
-                               time)]]))
+  (let [their-mins (format/unparse
+                    (format/formatter "m")
+                    time)
+        our-mins (format/unparse
+                  (format/formatter "m")
+                  (time/now))
+        min-diff (- their-mins our-mins)]
+    (cond
+      (= fmt :12) [:div.time
+                   [:div.hours (format/unparse
+                                (format/formatter "h")
+                                time)]
+                   (when-not (= min-diff 0)
+                     [:div.extra-mins min-diff])
+                   [:div.meridiem (format/unparse
+                                   (format/formatter "a")
+                                   time)]]
+      (= fmt :24) [:div.time
+                   [:span.hours (format/unparse
+                                 (format/formatter "H")
+                                 time)]])))
 
 ;; -------------------------
 ;; Views

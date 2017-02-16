@@ -49,6 +49,10 @@ table.strips {
   color: #999;
 }
 
+.extra-mins {
+  font-size: x-small;
+}
+
 .first-day .date {
   font-size: x-small;
   color: #555;
