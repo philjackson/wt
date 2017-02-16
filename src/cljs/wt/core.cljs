@@ -46,21 +46,15 @@
                      {:response-format :json
                       :handler #(swap! loaded-locales assoc name (extract-current-tz %))})]))
 
-(defn format-time [time fmt]
-  (let [their-mins (format/unparse
-                    (format/formatter "m")
-                    time)
-        our-mins (format/unparse
-                  (format/formatter "m")
-                  (time/now))
-        min-diff (- their-mins our-mins)]
+(defn format-time [time fmt offset]
+  (let [stupid-offset (rem offset 60)]
     (cond
       (= fmt :12) [:div.time
                    [:div.hours (format/unparse
                                 (format/formatter "h")
                                 time)]
-                   (when-not (= min-diff 0)
-                     [:div.extra-mins min-diff])
+                   (when-not (= stupid-offset 0)
+                     [:div.extra-mins stupid-offset])
                    [:div.meridiem (format/unparse
                                    (format/formatter "a")
                                    time)]]
@@ -119,11 +113,11 @@
                                   next)]]
 
                     (and (> hour 8) (< hour 19))
-                    [:td.work-hour (format-time next @(:format options))]
+                    [:td.work-hour (format-time next @(:format options) offset)]
 
                     ;; all other hours
                     :else
-                    [:td.hour (format-time next @(:format options))])
+                    [:td.hour (format-time next @(:format options) offset)])
                   {:key i}))))))])))
 
 (defn search-box []
