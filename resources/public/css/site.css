@@ -91,6 +91,7 @@ td.delete {
   width:1%;
   background: white;
   text-align: middle;
+  cursor: pointer;
 }
 
 .delete:hover {
