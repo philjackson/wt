@@ -17,13 +17,17 @@
 (def loaded-locales (atom {}))
 (def current-time (atom (time/now)))
 
+(defn initial-timezones []
+  (if-let [mem (from-ls "saved-zones")]
+    mem
+    [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
+     "Europe/Paris"
+     "Europe/Rome"
+     "Asia/Tokyo"
+     "America/New_York"]))
+
 ;; setup with some test zones. The first one is the user's home location.
-(def timezones-to-show (atom (or (from-ls "saved-zones")
-                                 [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
-                                  "Europe/Paris"
-                                  "Europe/Rome"
-                                  "Asia/Tokyo"
-                                  "America/New_York"])))
+(def timezones-to-show (atom (initial-timezones)))
 
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
