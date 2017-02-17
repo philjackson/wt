@@ -54,9 +54,7 @@
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler {:output-to "dist/js/app.js"
                         :output-dir "target/uberjar"
-                        :optimizations :advanced
-                        :pseudo-names true
-                        :pretty-print  true}}
+                        :optimizations :advanced}}
             :app {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
                   :compiler {:main "wt.dev"
                              :asset-path "/js/out"
