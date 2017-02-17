@@ -20,8 +20,7 @@
 (defn initial-timezones []
   (if-let [mem (from-ls "saved-zones")]
     mem
-    [(get (js->clj (.resolvedOptions (.DateTimeFormat js/Intl))) "timeZone")
-     "Europe/Paris"
+    ["Europe/Paris"
      "Europe/Rome"
      "Asia/Tokyo"
      "America/New_York"]))
