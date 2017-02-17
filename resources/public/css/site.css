@@ -40,6 +40,9 @@ table.strips {
   background: #eee;
   text-align: center;
 
+  height: 4em;
+  overflow: hidden;
+
   padding-top: 4px;
   padding-bottom: 4px;
 }
@@ -50,6 +53,7 @@ table.strips {
 }
 
 .extra-mins {
+  color: #333;
   font-size: x-small;
 }
 

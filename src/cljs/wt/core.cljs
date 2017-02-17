@@ -53,9 +53,10 @@
       (= fmt :12) [:div.time
                    [:div.hours (format/unparse
                                 (format/formatter "h")
-                                time)]
-                   (when-not (= stupid-offset 0)
-                     [:div.extra-mins stupid-offset])
+                                time)
+                    (when-not (= stupid-offset 0)
+                      [:span.extra-mins ":" stupid-offset])]
+                   
                    [:div.meridiem (format/unparse
                                    (format/formatter "a")
                                    time)]]
