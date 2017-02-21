@@ -18,12 +18,12 @@
 (def current-time (atom (time/now)))
 
 ;; setup with some test zones. The first one is the user's home location.
-(def timezones-to-show (local-storage (atom ["Europe/London"
-                                             "Europe/Paris"
-                                             "Europe/Rome"
-                                             "Asia/Tokyo"
-                                             "America/New_York"])
-                                      :timezones))
+(def timezones-to-show (local-storage (atom #{"Europe/London"
+                                              "Europe/Paris"
+                                              "Europe/Rome"
+                                              "Asia/Tokyo"
+                                              "America/New_York"})
+                                      :stimezones))
 
 (defonce idx (.lunr js/window #(this-as this
                                  (.ref this "id")
