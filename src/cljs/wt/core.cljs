@@ -75,12 +75,11 @@
   (fn []
     (let [{:keys [continent city]} (parse-tz-id name)]
       [:tr
-       [:td.delete {:on-click (fn [] (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))}
-        "✖"]
+       [:td.delete {:on-click (fn [] (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))} "✖"]
        [:td.name
         [:div.city (clojure.string/replace city "_" " ")]
         [:div.continent continent]]
-       (when-let [inf (get @loaded-locales name)]
+       (if-let [inf (get @loaded-locales name)]
          (let [[_, zonename, offset] inf
                start (time/minus @current-time (time/minutes offset))]
            (doall
@@ -115,7 +114,8 @@
                     ;; all other hours
                     :else
                     [:td.hour (format-time next @(:format options) offset)])
-                  {:key i}))))))])))
+                  {:key i})))))
+         [:td {:col-span 24} "Loading TZ information..."])])))
 
 (defn search-box []
   [:> (.-Async js/Select) {:loadOptions (fn [input cb]
