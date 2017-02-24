@@ -131,7 +131,8 @@
 
 (defn header []
   [:div.header
-   [:div.title "Timewiz"]])
+   [:a {:href "/"}
+    [:div.title "Timewiz"]]])
 
 (defn home-page []
   (let [now (time/now)]
