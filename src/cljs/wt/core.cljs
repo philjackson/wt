@@ -129,15 +129,21 @@
                            :placeholder "Name of a location..."
                            :onChange (fn [s] (swap! timezones-to-show conj (get (js->clj s) "value")))}])
 
+(defn header []
+  [:div.header
+   [:div.title "Timewiz"]])
+
 (defn home-page []
   (let [now (time/now)]
     [:div
-     [search-box]
-     [:table.strips
-      [:tbody
-       (doall
-        (for [z @timezones-to-show]
-          ^{:key z} [hour-strip z]))]]]))
+     [header]
+     [:div.main
+      [search-box]
+      [:table.strips
+       [:tbody
+        (doall
+         (for [z @timezones-to-show]
+           ^{:key z} [hour-strip z]))]]]]))
 
 (defn current-page []
   [:div [(session/get :current-page)]])
