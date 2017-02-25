@@ -20,6 +20,6 @@
   (.stringify js/JSON (clj->js index)))
 
 ;; read in the cities file and convert to json where continent points
-;; to various cities
+;; to various cities. Writes out the file once it's done.
 (let [lines (string/split (.readFileSync fs "cities15000.txt") "\n")]
-  (print (to-json (build-index lines))))
+  (.writeFileSync fs "index.json" (to-json (build-index lines))))

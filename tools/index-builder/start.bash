@@ -16,3 +16,5 @@ mv latest.json ..
 
 cd ..
 rm -rf tmp
+
+./indexer.cljs
