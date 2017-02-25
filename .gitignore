@@ -13,3 +13,5 @@ pom.xml.asc
 /.repl
 *.log
 /.env
+/tools/index-builder/cities15000.txt
+/tools/index-builder/latest.json
