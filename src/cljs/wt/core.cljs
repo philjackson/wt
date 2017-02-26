@@ -19,7 +19,7 @@
 
 ;; setup with some test zones. The first one is the user's home location.
 (def timezones-to-show (local-storage (atom #{})
-                                      :stimezones))
+                                      :cities))
 
 (defonce idx (.lunr js/window #(this-as this
                                  (.field this "city")
