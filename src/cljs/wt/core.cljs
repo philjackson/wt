@@ -26,9 +26,8 @@
                                       :stimezones))
 
 (defonce idx (.lunr js/window #(this-as this
-                                 (.ref this "id")
                                  (.field this "city")
-                                 (.field this "continent"))))
+                                 (.ref this "id"))))
 
 (defn parse-tz-id [id]
   (zipmap [:continent :city]
@@ -163,8 +162,9 @@
 
 (defn load-index [docs]
   (doall
-   (doseq [doc docs]
-     (.add idx (clj->js doc)))))
+   (doseq [[tz cities] docs]
+     (doseq [city cities]
+       (.add idx (clj->js {:id (str city " - " tz) :city city}))))))
 
 (defn init! []
   (accountant/configure-navigation!
