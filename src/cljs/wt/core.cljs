@@ -29,9 +29,10 @@
                                  (.field this "city")
                                  (.ref this "id"))))
 
-(defn parse-tz-id [id]
+(defn parse-tz-id* [id]
   (zipmap [:continent :city]
           (clojure.string/split id "/")))
+(def parse-tz-id (memoize parse-tz-id*))
 
 (defn local-time []
   (time/local-date-time (time/now)))
