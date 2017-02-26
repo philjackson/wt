@@ -18,11 +18,7 @@
 (def current-time (atom (time/now)))
 
 ;; setup with some test zones. The first one is the user's home location.
-(def timezones-to-show (local-storage (atom #{"Europe/London"
-                                              "Europe/Paris"
-                                              "Europe/Rome"
-                                              "Asia/Tokyo"
-                                              "America/New_York"})
+(def timezones-to-show (local-storage (atom #{})
                                       :stimezones))
 
 (defonce idx (.lunr js/window #(this-as this
@@ -41,6 +37,7 @@
                       (nil? (first %))) timestamps)))
 
 (defn async-fetch-locale [name]
+  (log name)
   (let [{:keys [continent city]} (parse-tz-id name)
         response (GET (str "tz/" continent "/" city ".json")
                      {:response-format :json
@@ -67,18 +64,19 @@
 ;; -------------------------
 ;; Views
 (defn hour-strip [name]
-  ;; before mount
-  (async-fetch-locale name)
+  (let [[city tz] (clojure.string/split name " - ")]
+    ;; before mount
+    (async-fetch-locale tz)
 
-  ;; render
-  (fn []
-    (let [{:keys [continent city]} (parse-tz-id name)]
+    ;; render
+    (fn []
+      ;;"London - Europe/London"
       [:tr
        [:td.delete {:on-click (fn [] (swap! timezones-to-show #(remove (fn [n] (= n name)) %)))} "✖"]
        [:td.name
-        [:div.city (clojure.string/replace city "_" " ")]
-        [:div.continent continent]]
-       (if-let [inf (get @loaded-locales name)]
+        [:div.city city]
+        [:div.continent tz]]
+       (if-let [inf (get @loaded-locales tz)]
          (let [[_, zonename, offset] inf
                start (time/minus @current-time (time/minutes offset))]
            (doall
@@ -119,13 +117,15 @@
 (defn search-box []
   [:> (.-Async js/Select) {:loadOptions (fn [input cb]
                                           (let [res (js->clj (.search idx input))
-                                                options (mapv (fn [l]
-                                                                {:value (get l "ref")
-                                                                 :label (get l "ref")}) res)]
+                                                options (if (>= (count input) 2)
+                                                          (mapv (fn [l]
+                                                                  {:value (get l "ref")
+                                                                   :label (get l "ref")}) res)
+                                                          [])]
                                             (cb nil (clj->js {:options options
                                                               :complete (= (count options) 1)
                                                               :autoload false}))))
-                           :placeholder "Name of a location..."
+                           :placeholder "Name of a city..."
                            :onChange (fn [s] (swap! timezones-to-show conj (get (js->clj s) "value")))}])
 
 (defn header []
@@ -175,8 +175,8 @@
     (fn [path]
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
+  (.setInterval js/window #(reset! current-time (time/now)) 30000)
+  (mount-root)
   (GET "tz/index.json"
       {:response-format :json
-       :handler load-index})
-  (.setInterval js/window #(reset! current-time (time/now)) 30000)
-  (mount-root))
+       :handler load-index}))
