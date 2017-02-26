@@ -165,10 +165,9 @@
   (reagent/render [current-page] (.getElementById js/document "app")))
 
 (defn load-index [docs]
-  (doall
-   (doseq [[tz cities] docs]
-     (doseq [city cities]
-       (.add idx (clj->js {:id (str city " - " tz) :city city}))))))
+  (doseq [[tz cities] docs]
+    (doseq [city cities]
+      (.add idx (clj->js {:id (str city " - " tz) :city city})))))
 
 (defn init! []
   (accountant/configure-navigation!
