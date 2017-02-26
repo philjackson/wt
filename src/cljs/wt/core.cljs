@@ -41,7 +41,6 @@
                       (nil? (first %))) timestamps)))
 
 (defn async-fetch-locale [name]
-  (log name)
   (let [{:keys [continent city]} (parse-tz-id name)
         response (GET (str "tz/" continent "/" city ".json")
                      {:response-format :json
